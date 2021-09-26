@@ -1,8 +1,52 @@
 {% include 'base.html' %}
 
-
 {% block content %}
+<div class="container">
 
-<h1> Welcome to homepage </h1>
+<form class="form-inline" action="add_task/" method="post">
+  {% csrf_token %}
+  <div class="row">
+  <div class="col-md-6">
+    <input type="text" class="form-control mb-2 mr-sm-2" id="autoSizingInput" placeholder="Type here" name="task">
+  </div>
+<div class="col-md-6">
+  <select class="custom-select" name="category_select">
+    {% for category in category_list %}
+  <option value="{{ category.title }}" name="{{ category.title }}">{{category.title}}</option>
+  {% endfor %}
 
+</select>
+</div>
+
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary mb-3">Add Task</button>
+  </div>
+  </div>
+</form>
+
+
+<div class="row">
+  <ul class="list-group">
+    {% for task in task_list %}
+  <li class="list-group-item" {% if task.iscompleted %} style="text-decoration: line-through;" {% endif %}>
+    {{task}}
+
+    <form  class="form-inline" action="complete_task/{{task.id}}/" method="post" {% if task.iscompleted %} style="display:none" {% endif %}>
+      {% csrf_token %}
+
+    <button class="btn btn-small btn-success " style="float:right"> Mark as Complete </button>
+    </form>
+
+    <form  class="form-inline" action="delete_task/{{task.id}}/" method="post" {% if task.iscompleted %} style="display:block" {% else %} style="display:none" {% endif %}>
+      {% csrf_token %}
+
+    <button class="btn btn-small btn-danger " style="float:right"> Delete </button>
+    </form>
+
+  </li>
+  {% endfor %}
+</ul>
+  </div>
+
+</div>
 {% endblock %}
